@@ -2,60 +2,54 @@
 
 import os
 import numpy as np
-from functools import reduce
-
-
-class Board:
-    def __init__(self, string_list):
-        self.mark = np.zeros((5, 5))
-        self.data = np.array([line.split() for line in string_list], dtype=int)
-        self.finished = False
-
-    def mark_number(self, number):
-        self.mark[np.where(self.data == number)] = 1
-
-    def check(self):
-        return np.any((np.sum(self.mark, 0) == 5)) or np.any(np.sum(self.mark, 1) == 5)
-
-    def isFinished(self):
-        return self.finished
-
-    def setFinished(self):
-        self.finished = True
-
-    def finallly(self):
-        print(self.data)
-        print(self.mark)
-        return self.data[np.where(self.mark == 0)]
-
-    def __repr__(self):
-        return self.data.__repr__()
-
 
 def first():
-    for m in moves:
-        for board in boards:
-            board.mark_number(m)
-            if board.check():
-                result = board.finallly();
-                return m * np.sum(result)
-
+    floor = np.zeros((1000, 1000))
+    for line in lines:
+        x1= line[0][0]
+        y1 = line[0][1]
+        x2 = line[1][0]
+        y2 = line[1][1]
+        if y1==y2:
+            floor[min(x1, x2):max(x1,x2)+1,  y1] += 1
+        elif x1==x2:
+            floor[x1, min(y1,y2):max(y1,y2)+1] += 1
+    return len(np.where(floor >= 2)[0])
 
 def second():
-    notDoneBoards = n_boards
-    for m in moves:
-        for board in boards:
-            board.mark_number(m)
-            if not board.isFinished() and board.check() and notDoneBoards > 1:
-                notDoneBoards -= 1
-                board.setFinished()
-            if notDoneBoards == 1 and not board.isFinished() and board.check():
-                    result = board.finallly();
-                    return m * np.sum(result)
+    floor = np.zeros((1000, 1000))
+    for line in lines:
+        x1= line[0][0]
+        y1 = line[0][1]
+        x2 = line[1][0]
+        y2 = line[1][1]
+        if y1==y2:
+            floor[min(x1, x2):max(x1,x2)+1,  y1] += 1
+        elif x1==x2:
+            floor[x1, min(y1,y2):max(y1,y2)+1] += 1
+        else:
+            floor[make_diagonal(x1, y1, x2, y2)] += 1
+    return len(np.where(floor >= 2)[0])
 
-def decode_lines
+def make_diagonal(x1, y1, x2, y2):
+    signx = (x2-x1)/np.abs(x1-x2)
+    signy = (y2-y1)/np.abs(y1-y2)
+    all = ([(int(x1+signx*i), int(y1+signy*i)) for i in range(np.abs(x1-x2)+1)])
+    x = ([a[0] for a in all], [b[1] for b in all])
+    return x
+
+
+def decode_lines(line):
+    (x1, y1x2, y2) = line.split(',')
+    (y1, x2) = y1x2.split(' -> ')
+    return (int(x1), int(y1)), (int(x2), int(y2))
+
 if __name__ == '__main__':
     file = "input.txt"
     data = np.array([line.rstrip('\n') for line in open(file)])
-    lines = [()]
-    print(data)
+    lines = [decode_lines(entry) for entry in data]
+    # print(lines)
+    print(f"At at least {first()} places two lines overlap.")
+    # lines = lines[0:1]
+    print(lines)
+    print(second())
