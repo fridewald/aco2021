@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-import os
 import numpy as np
-from functools import reduce
 
 
 class Board:
@@ -37,7 +35,7 @@ def first():
         for board in boards:
             board.mark_number(m)
             if board.check():
-                result = board.finallly();
+                result = board.finallly()
                 return m * np.sum(result)
 
 
@@ -50,8 +48,8 @@ def second():
                 notDoneBoards -= 1
                 board.setFinished()
             if notDoneBoards == 1 and not board.isFinished() and board.check():
-                    result = board.finallly();
-                    return m * np.sum(result)
+                result = board.finallly()
+                return m * np.sum(result)
 
 
 if __name__ == '__main__':

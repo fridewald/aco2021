@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-import os
-import numpy as np
 
 def first():
     max_crab = max(crabs)
